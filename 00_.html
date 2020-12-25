@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+		<script type="text/javascript">
+			function show1(){
+				let _uname = uname.value;
+				let _upwd = upwd.value;
+				if(!_uname||!_upwd){
+					alert('不能为空值');
+					return;
+				}
+				let xhr = new XMLHttpRequest();
+				xhr.onreadystatechange = function(){
+					if(xhr.readyState==4 && xhr.status==200){
+						let r = xhr.responseText;
+						d1.innerHTML = r;
+					}
+				}
+				xhr.open("GET",`/pro/v1/login/${_uname}&${_upwd}`);
+				xhr.send();
+			}
+			function show2(){
+				let xhr = new XMLHttpRequest();
+				xhr.onreadystatechange = function(){
+					if(xhr.readyState==4 && xhr.status==200){
+						let r = xhr.responseText;
+						let arr = JSON.parse(r);
+						let html=``;
+						for(let i in arr){
+							let sex = '保密';
+							if(arr[i].gender==1){
+								sex = '男';
+							}else if(arr[i].gender==0){
+								sex = '女';
+							}
+							html += `
+								<tr>
+									<td>${arr[i].uname}</td>
+									<td>${arr[i].email}</td>
+									<td>${arr[i].phone}</td>
+									<td>${arr[i].user_name}</td>
+									<td>${sex}</td>
+								</tr>
+							`;
+						}
+						d2.innerHTML = `
+							<table border="1" cellspacing="0" cellpadding="">
+								<tr>
+									<td>用户帐号</td>
+									<td>用户邮件</td>
+									<td>用户手机号</td>
+									<td>用户姓名</td>
+									<td>用户性别</td>
+								</tr>
+								${html}
+							</table>
+						`;
+					}
+				}
+				xhr.open("GET","/pro/v1/list");
+				xhr.send();
+			}
+			
+			function show3(){
+				
+				let _uid = uid.value;
+				if(!_uid){
+					alert('不能为空值');
+					return;
+				}
+				let xhr = new XMLHttpRequest();
+				xhr.onreadystatechange = function(){
+					if(xhr.readyState==4 && xhr.status==200){
+						let r = xhr.responseText;
+						d3.innerHTML = r;
+					}
+				}
+				xhr.open("delete",`/pro/v1/delete/${_uid}`,true);
+				xhr.send();
+			}
+			
+			function show4(){
+				
+				let _uid = uid.value;
+				if(!_uid){
+					alert('不能为空值');
+					return;
+				}
+				let xhr = new XMLHttpRequest();
+				xhr.onreadystatechange = function(){
+					if(xhr.readyState==4 && xhr.status==200){
+						let r= xhr.responseText;
+						let arr = JSON.parse(r);
+						if(arr.length==0){
+							d4.innerHTML = '不存在此用户';
+						}else{
+							let html =``;
+						//console.log(arr[0].uname);
+						for(let i in arr[0]){
+							html += `<td>${arr[0][i]}</td>`; 
+						}
+						d4.innerHTML = `
+							<table border="" cellspacing="" cellpadding="">
+								${html}
+							</table>
+						`;
+						}
+						
+					}
+				}
+				xhr.open("GET",`/pro/v1/search/${_uid}`,true);
+				xhr.send();
+			}
+			
+			function show5(){
+				let _uname = uname.value;
+				let _upwd = upwd.value;
+				let _uid = uid.value;
+				if(!_uname||!_upwd||!_uid){
+					alert('不能为空值');
+					return;
+				}
+				let xhr =new XMLHttpRequest();
+				xhr.onreadystatechange = function(){
+					if(xhr.readyState==4 && xhr.status==200){
+						let r = xhr.response;
+						d5.innerHTML = r;
+					}
+				}
+				xhr.open("PUT","/pro/v1/update/",true);
+				let data = `uid=${_uid}&uname=${_uname}&upwd=${_upwd}`;
+				xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhr.send(data);
+			}
+			
+			function show6(){
+				
+				let _uname = uname.value;
+				if(!_uname){
+					alert('不能为空值');
+					return;
+				}
+				let xhr = new XMLHttpRequest();
+				xhr.onreadystatechange = function(){
+					if(xhr.readyState==4 && xhr.status==200){
+						let r = xhr.responseText;
+						d6.innerHTML = r;
+					}
+				}
+				xhr.open("GET",`/pro/v1/getUname/${_uname}`,true);
+				xhr.send();
+			}
+			
+			function show7(){
+				
+				let _uname = uname.value;
+				let _upwd = upwd.value;
+				let _phone = phone.value;
+				let _gender = gender.value;
+				if(!_uname||!_upwd||!_phone||!_gender){
+					alert('不能为空值');
+					return;
+				}
+				let xhr = new XMLHttpRequest();
+				xhr.onreadystatechange = function(){
+					if(xhr.readyState==4 && xhr.status==200){
+						let r = xhr.responseText;
+						d7.innerHTML = r;
+					}
+				}
+				xhr.open("POST","/pro/v1/reg",true);
+				let data = `uname=${_uname}&upwd=${_upwd}&phone=${_phone}&gender=${_gender}`;
+				xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+				xhr.send(data);
+			}
+		</script>
+		<style type="text/css">
+			td{
+				padding:0 5px;
+			}
+		</style>
+</head>
+<body>
+	
+    帐号：<input type="text" id="uname"><br>
+    密码：<input type="password" id="upwd"><br>	
+		电话：<input type="text" id="phone"><br>
+		性别：<input type="text" id="gender"><br>
+		艾迪：<input type="text" id="uid"><br>
+    <button onclick="show1()">作业一</button><span id="d1">用帐号密码登录</span><br>
+    <button onclick="show2()">作业二</button><span id="d2">直接查询用户</span><br>
+    <button onclick="show3()">作业三</button><span id="d3">用艾迪删除用户</span><br>
+    <button onclick="show4()">作业四</button><span id="d4">根据艾迪查询用户</span><br>
+    <button onclick="show5()">作业五</button><span id="d5">根据uid修改用户信息</span><br>
+    <button onclick="show6()">作业六</button><span id="d6">根据uname查询用户（用户名重复验证）</span><br>
+    <button onclick="show7()">作业七</button><span id="d7">注册新用户</span><br>
+</body>
+
+</html>
